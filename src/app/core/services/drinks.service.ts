@@ -5,6 +5,8 @@ import { catchError } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { AppState } from "../store/reducers";
 import * as actions from "../store/actions";
+import { DrinkRecipe } from "../models/visualisation";
+import { getCurrentDrink } from "../store/selectors";
 
 @Injectable()
 export class DrinksService {
@@ -19,16 +21,15 @@ export class DrinksService {
         this.store.dispatch(new actions.Load());
       }
     
-    //   public setNextDrink(): void {
-    //     this.store.dispatch(new actions.SetNextDrink());
-    //   }
+      public setNextDrink(): void {
+        this.store.dispatch(new actions.SetNextDrink());
+      }
     
-    //   public setPreviousDrink(): void {
-    //     this.store.dispatch(new actions.SetPreviousDrink());
-    //   }
+      public setPreviousDrink(): void {
+        this.store.dispatch(new actions.SetPreviousDrink());
+      }
     
-    //   public getCurrentDrink(): Observable<DrinkRecipe | undefined> {
-    //     // return this.store.select(getCurrentDrink);
-    //     return null;
-    //   }
+      public getCurrentDrink(): Observable<DrinkRecipe | undefined> {
+        return this.store.select(getCurrentDrink);
+      }
 }

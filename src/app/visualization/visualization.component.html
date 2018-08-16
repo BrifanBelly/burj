@@ -9,9 +9,11 @@
     stroke: red;
     stroke-width: 0.5px;
 "></path>
+<defs>
     <clipPath id="clipping">
-      <path transform='translate(0,-237)' [attr.d]="clippingMask"/>
+      <path class="cp" transform='translate(0,-237)' [attr.d]="clippingMask"/>
     </clipPath>
+</defs>
   </g>
   <g clip-path="url(#clipping)" class="ingredients-layers">
   </g>
