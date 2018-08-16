@@ -6,6 +6,7 @@ import { DrinksService } from './core/services/drinks.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { VisualizationComponent } from './visualization/visualization.component';
+import { RenderService } from './services/render.service';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,7 @@ import { VisualizationComponent } from './visualization/visualization.component'
     HttpClientModule,
     CoreModule
   ],
-  providers: [DrinksService],
+  providers: [DrinksService, RenderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
