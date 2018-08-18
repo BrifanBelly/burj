@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from './core/store/reducers';
 import { Load } from './core/store/actions';
@@ -12,19 +12,13 @@ import { DrinkRecipe } from './core/models/visualisation';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit{
-  title = 'drinks';
-
-  public drinkName: string = "Gin";
-
-  constructor( private storeService: DrinksService, private cdRef: ChangeDetectorRef, ) {
+  constructor( private storeService: DrinksService ) {
 
   }
 
   public ngOnInit(): void {
     this.storeService.loadDrinks();
     this.storeService.getCurrentDrink().subscribe(( drink: DrinkRecipe | undefined ) => {
-      this.drinkName = drink && drink.name;
-      // this.cdRef.detectChanges();
     });
   }
 

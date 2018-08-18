@@ -7,11 +7,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
 import { VisualizationComponent } from './visualization/visualization.component';
 import { RenderService } from './services/render.service';
+import { TitleComponent } from './title/title.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    VisualizationComponent
+    VisualizationComponent,
+    TitleComponent
   ],
   imports: [
     BrowserModule,
