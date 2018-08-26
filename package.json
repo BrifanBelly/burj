@@ -23,8 +23,10 @@
     "@ngrx/core": "^1.2.0",
     "@ngrx/effects": "^6.1.0",
     "@ngrx/store": "^6.1.0",
+    "@types/greensock": "^1.15.32",
     "core-js": "^2.5.4",
     "d3": "^5.5.0",
+    "gsap": "^2.0.1",
     "rxjs": "^6.0.0",
     "snapsvg": "^0.5.1",
     "zone.js": "~0.8.26"

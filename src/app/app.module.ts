@@ -8,6 +8,7 @@ import { CoreModule } from './core/core.module';
 import { VisualizationComponent } from './visualization/visualization.component';
 import { RenderService } from './services/render.service';
 import { TitleComponent } from './title/title.component';
+import { UtilsModule } from './utils/utils.module';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { TitleComponent } from './title/title.component';
   imports: [
     BrowserModule,
     HttpClientModule,
-    CoreModule
+    CoreModule,
+    UtilsModule
   ],
   providers: [DrinksService, RenderService],
   bootstrap: [AppComponent]
