@@ -1,6 +1,9 @@
-<div class="main-container">
-    <div class="search-box">
+<button class="button md-button list-visibility show-list" (click)="mobileListVisible=true">FULL LIST</button>
+<div class="main-container" [class.visible]="mobileListVisible">
+    <button class="button md-button list-visibility" (click)="mobileListVisible=false">CLOSE</button>
+      <div class="search-box">
         <input type="text" name="search" placeholder="Search drinks" [formControl]="searchControl">
+        <button (click)="resetSearchQuery()">x</button>
     </div>
     <div class="list">
   <ul>
@@ -13,11 +16,12 @@
 </div>
 
 <div class="filters">
-    <div> Base alcohol</div>
+    <div> Filter By Alcohol</div>
     <button *ngFor="let type of alcoholTypes"
-            (click)="toogggleFilterType(type)"
-            [class.active]="filters.types[type]" class="sm-button">
+            (click)="toggleFilterType(type)"
+            [class.active]="filters.types[type]" class="button sm-button">
         {{type}}
     </button>
+    <button class="button sm-button reset" (click)="resetTypeFilter()">reset</button>
 </div>
 </div>
