@@ -1,26 +1,31 @@
+$gray: #7d7d7d;
+$white: white;
+$black: #272727;
+
+
 h1 {
-    position: relative;
+  color: $black;
+  position: relative;
+}
+
+h1 div {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, 0);
+}
+
+.div--text-container span {
+  display: inline-block;
+}
+
+::ng-deep .animate-to-default {
+  animation: backToDefault 5s;
+}
+
+@keyframes backToDefault {
+  to {
+    transform: translate(0);
+    opacity: 1
   }
-  
-  h1 div {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translate(-50%, 0);
-  }
-  
-  .text-container span{
-    display: inline-block;
-  }
-  
-  ::ng-deep .animate-to-default {
-    animation: backToDefault 5s;
-  }
-  
-  @keyframes backToDefault {
-    to {
-      transform: translate(0);
-      opacity: 1
-    }
-  }
-  
+}

@@ -60,6 +60,7 @@ private appendText( letters: string[], container: D3Selection ): void {
   letters.forEach(( letter: string ) => {
     container.append('span')
       .style('display', 'inline-block')
+      .style('width', letter === ' '? '1rem': '')
       .text(letter.toUpperCase())
       .classed('letter-' + letter.toUpperCase(), true)
       .datum<{ letter: string }>({ letter: letter.toUpperCase() });
