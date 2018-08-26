@@ -1,13 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, OnDestroy, EventEmitter } from '@angular/core';
-import { DrinksService } from '../core/services/drinks.service';
-import { interval, Observable, bindCallback } from 'rxjs';
-import { takeUntil, map, switchMap, filter } from 'rxjs/operators';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, OnDestroy, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { takeUntil, switchMap, filter, tap } from 'rxjs/operators';
 import { RenderService, ViewData } from '../services/render.service';
-import { DrinkRecipe } from '../core/models/visualisation';
-import * as SnapTS from 'snapsvg';
+import { Ingredient } from '../core/models/visualisation';
 
-
-declare const Snap: any;
+const VIEWBOX_HEIGHT = 60;
 
 @Component({
   selector: 'app-visualization',
@@ -17,19 +13,37 @@ declare const Snap: any;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisualizationComponent implements OnInit, OnDestroy {
-  @ViewChild('svgContainer') public svgContainer: ElementRef
-  public snapSvg: SnapTS.Paper;
+  @ViewChild('svgContainer') public svgContainer: ElementRef;
+
+  ingredients: Ingredient[] = [];
+  listTop: number = 0;
+  listHeight: number = 0
+  animating: boolean = false;
   private ngOnDestroy$: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private renderService: RenderService) { }
+  constructor(private renderService: RenderService, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.snapSvg = Snap(this.svgContainer.nativeElement);
 
-    this.renderService.getViewData(this.snapSvg).pipe(
+    this.renderService.getViewData().pipe(
       takeUntil(this.ngOnDestroy$),
       filter((data: ViewData | undefined) => !!data), // to handle undefined data
-      switchMap((data: ViewData) => this.renderService.renderDrink(data))
+      tap(() => {
+        this.animating = true;
+        this.cdRef.detectChanges();
+      }),
+      tap((data: ViewData) => {
+        const glass = data.recipe.glass;
+        this.listTop = (glass.maskTopMargin / VIEWBOX_HEIGHT ) * 100;
+        this.listHeight = (glass.maskHeight / VIEWBOX_HEIGHT ) * 100;
+        this.ingredients = data.recipe.ingredients;
+        this.cdRef.detectChanges();
+      }),
+      switchMap((data: ViewData) => this.renderService.renderDrink(data)),
+      tap(() => {
+        this.animating = false;
+        this.cdRef.detectChanges();
+      })
     ).subscribe();
   }
   

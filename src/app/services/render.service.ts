@@ -3,8 +3,9 @@ import { DrinkRecipe, Ingredient } from '../core/models/visualisation';
 import { Observable, bindCallback, of } from 'rxjs';
 import { DrinksService } from '../core/services/drinks.service';
 import { takeUntil, map, tap, switchMap, take } from 'rxjs/operators';
-import { Paper, Element } from 'snapsvg';
-// import * as Snap from 'snapsvg';
+import * as d3 from 'd3';
+
+type D3Selection = d3.Selection<d3.BaseType, any, d3.BaseType, undefined>;
 
 interface IngredientViewLayer {
   y: number;
@@ -16,24 +17,20 @@ export interface ViewData{
   mask: string;
   path: string;
   drinkLayers: IngredientViewLayer[];
+  recipe: DrinkRecipe;
 }
 
 const VIEWBOX_HEIGHT = 60;
-
-declare var mina: any;  
- declare var Snap: any;  
 
 @Injectable({
   providedIn: 'root'
 })
 export class RenderService implements OnDestroy {
-
-  private snapSvg: Paper;
+  svgD3Selection: D3Selection;
   private ngOnDestroy$: EventEmitter<boolean> = new EventEmitter();
   constructor(private drinkService: DrinksService) { }
 
-  public getViewData(container: Paper): any | Observable<ViewData | undefined>{
-    this.snapSvg = container;
+  public getViewData(): any | Observable<ViewData | undefined>{
     return this.drinkService.getCurrentDrink().pipe(
       takeUntil(this.ngOnDestroy$),
       map((drink: DrinkRecipe) => {
@@ -43,7 +40,7 @@ export class RenderService implements OnDestroy {
         const drinkLayers = this.createDrinkLayers(drink);
           const mask = drink.glass.mask;
           const path = drink.glass.path;
-          return { mask, path, drinkLayers }; 
+          return { mask, path, drinkLayers, recipe: drink }; 
       })
     )
   }
@@ -63,7 +60,7 @@ export class RenderService implements OnDestroy {
   * so that only the part of view in the glass is visible
    */
   private setClippingMask( path: string ): void {
-    this.snapSvg.select('#clipping-mask path').attr({ d: path });
+    d3.select('#clipping-mask path').attr('d', path);
   }
 
   /*
@@ -73,7 +70,12 @@ export class RenderService implements OnDestroy {
   private renderGlass( path: string = '' ): Observable<void> {
     return bindCallback(
       ( cb: () => void ) => { // callback function
-        this.snapSvg.select('path').animate({ d: path }, 300, mina.easeinout, cb);
+        const currentPath = d3.select('.path--glass-path');
+				currentPath
+				.transition()
+				.duration(800)
+				.attrTween('d', this.pathTween(currentPath!.node() as SVGPathElement, path, 0.5))
+				.on('end', cb);
       }
     )();
   } 
@@ -87,48 +89,29 @@ export class RenderService implements OnDestroy {
   private renderIngredients( layers: IngredientViewLayer[] ): Observable<void> {
     return bindCallback(
       ( cb: () => void ) => {
-        const container: Paper = Snap(this.snapSvg.select('.g--ingredients'))
-          .g() // adding additional grouping element which will be animated
-          .attr({
+        const container: D3Selection = d3.select('.g--ingredients')
+          .append('g') // adding additional grouping element which will be animated
+          .attr(
             // set scale to 0 and move to the bottom of view so then we can scale it up and update position
             // to create illusion of filling the glass up from the bottom
-            transform: `t 0 ${VIEWBOX_HEIGHT} s1 0`,
-            opacity  : 0
-          });
+            'transform',`translate(0 ${VIEWBOX_HEIGHT})`,
+          );
           layers.forEach(( layer: IngredientViewLayer ) => { // appending ingredients rectangles to the view
-            container.rect(0, layer.y, 45, layer.h).attr({ 'fill': layer.i.colour });
+            container.append('rect')
+            .attr('x', 0)
+            .attr('y', layer.y)
+            .attr('width', 45)
+            .attr('height', layer.h)
+            .style('fill', layer.i.colour);
           });
   
-          container.animate({
-            transform: 't 0 0 s1 1',
-            opacity  : 1
-          }, 600, mina.linear, cb);
+          container.transition()
+          .duration(500)
+          .attr('transform', 'translate(0,0)')
+          .on('end', cb)
         }
       )();
     }
-  
-
-//   renderDrink(container, drink: DrinkRecipe, drinkLayers: IngredientViewLayer[]): void {
-//     container.select('.ingredients-layers').clear();
-
-//     this.renderGlass(container, drink).subscribe(() => this.renderIngredients(container, drinkLayers))
-//   }
-//   private renderIngredients(c, layers: IngredientViewLayer[]): void {
-//     const container = c.select('.ingredients-layers');
-
-//     layers.forEach(( layer: IngredientViewLayer ) => {
-//       const rect = container.rect(0, 0, 45, 0).attr('fill', layer.i.colour);
-//       rect.animate({ height: layer.h, y: layer.y }, 1500);
-//     });
-//   }
-//  private renderGlass(container, drink: DrinkRecipe): Observable<void> {
-//     const render = ( cb: () => void ) => {
-//       const path = container.select('path');
-//       path.animate({ d: drink.glass.path }, 1500, mina.bounce, cb);
-//     };
-//     return bindCallback(render)();
-//   }
-
 
     /*
   * Before creating new render we should clean up previous one.
@@ -138,18 +121,14 @@ export class RenderService implements OnDestroy {
   private cleanUpCurrentRender(): Observable<void> {
     return bindCallback(
       ( cb: () => void ) => {
-        const ingredientsView: Element = this.snapSvg.select('.g--ingredients g');
-        if ( ingredientsView ) {
-          ingredientsView.animate({
-            // transitioning the view to the bottom and scaling in to 0
-            // to create effect of emptying the glass
-            transform: `t 0 ${VIEWBOX_HEIGHT} s1 0`,
-            opacity  : 0
-          }, 400, mina.linear, () => {
-            // once animation is finished we can destroy view elements
-            Snap(this.snapSvg.select('.g--ingredients')).clear();
-            cb();
-          });
+        const ingredientsView: D3Selection = d3.select('.g--ingredients g');
+        if ( ingredientsView.node() ) {
+          ingredientsView
+          .transition()
+          .duration(1000)
+          .attr('transform', `translate(0, ${VIEWBOX_HEIGHT})`)
+          .on('end', cb)
+          .remove();
         }
         else {
           cb();
@@ -176,6 +155,33 @@ export class RenderService implements OnDestroy {
       topDist += ingredientHeightScaled;
       return viewLayer;
     });
+  }
+
+  private pathTween( currentPath: SVGPathElement, d1: string, precision: number ): any {
+		return function (): any {
+			const newPath: SVGPathElement = currentPath.cloneNode() as SVGPathElement;
+			const n0 = currentPath.getTotalLength();
+			const n1 = (newPath.setAttribute('d', d1), newPath).getTotalLength();
+			// Uniform sampling of distance based on specified precision.
+			const distances = [ 0 ];
+			let i = 0;
+			const dt = precision / Math.max(n0, n1);
+			while ( (i += dt) < 1 ) {
+				distances.push(i);
+			}
+			distances.push(1);
+
+			// Compute point-interpolators at each distance.
+			const points = distances.map(( t: number ) => {
+				const p0 = currentPath.getPointAtLength(t * n0);
+				const p1 = newPath.getPointAtLength(t * n1);
+				return d3.interpolate([ p0.x, p0.y ], [ p1.x, p1.y ]);
+			});
+
+			return ( t: number ) => {
+				return t < 1 ? 'M' + points.map(( p: any ) => p(t)).join('L') : d1;
+			};
+    };
   }
 
 

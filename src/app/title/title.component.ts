@@ -3,7 +3,7 @@ import { DrinksService } from '../core/services/drinks.service';
 import { switchMap, map, takeUntil } from 'rxjs/operators';
 import { Observable} from 'rxjs';
 
-type D3Selection = d3.Selection<d3.BaseType, any, d3.BaseType, undefined>;
+export type D3Selection = d3.Selection<d3.BaseType, any, d3.BaseType, undefined>;
 
 @Component({
   selector: 'app-title',
