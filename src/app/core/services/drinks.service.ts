@@ -14,7 +14,7 @@ export class DrinksService {
     constructor(private http: HttpClient, private store: Store<AppState>,private fbService: FirebaseService){}
 
     public getDrinks(): Observable<any> {
-        return this.fbService.getDrinks()
+        return this.fbService.getDrinks()     
         .pipe(catchError((error: any) => Observable.throw(error.json())));
     }
 
@@ -32,5 +32,13 @@ export class DrinksService {
     
       public getCurrentDrink(): Observable<DrinkRecipe | undefined> {
         return this.store.select(getCurrentDrink);
+      }
+
+      public setCurrentDrinkById( id: string ): void {
+        this.store.dispatch(new actions.SetDrinkById(id));
+      }
+    
+      public setCurrentDrinkByName( name: string ): void {
+        this.store.dispatch(new actions.SetDrinkByName(name));
       }
 }

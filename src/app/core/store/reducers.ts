@@ -18,7 +18,8 @@ export interface DrinkState {
 
 export const initialState: DrinkState = {
     loaded:  false,
-    loading: false
+    loading: false,
+    drinks: []
 };
 
 export function reducer( state = initialState, action: Actions): DrinkState {
@@ -64,6 +65,17 @@ export function reducer( state = initialState, action: Actions): DrinkState {
             if ( !prevDrink ) { return { ...state }; }
             return { ...state, currentDrink: prevDrink, };
           }
+
+          case ActionTypes.SetDrinkById: {
+			const drink = state.drinks.find(( d: DrinkRecipe ) => d.id === action.payload) || state.drinks[ 0 ];
+			return { ...state, currentDrink: drink, };
+		}
+
+		case ActionTypes.SetDrinkByName: {
+			const drink = state.drinks.find(( d: DrinkRecipe ) => d.name.toLowerCase() === action.payload.toLowerCase()) || state.drinks[ 0 ];
+
+			return { ...state, currentDrink: drink, };
+		}
       
           default:
             return state;

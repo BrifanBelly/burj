@@ -7,6 +7,8 @@ import * as d3 from 'd3';
 
 type D3Selection = d3.Selection<d3.BaseType, any, d3.BaseType, undefined>;
 
+const ANIM_DURATION = 400;
+
 interface IngredientViewLayer {
   y: number;
   h: number;
@@ -74,8 +76,8 @@ export class RenderService implements OnDestroy {
         const currentPath = d3.select('.path--glass-path');
 				currentPath
 				.transition()
-				.duration(800)
-				.attrTween('d', this.pathTween(currentPath!.node() as SVGPathElement, path, 0.5))
+				.duration(ANIM_DURATION)
+				.attrTween('d', this.pathTween(currentPath!.node() as SVGPathElement, path, 1))
 				.on('end', cb);
       }
     )();
@@ -107,7 +109,7 @@ export class RenderService implements OnDestroy {
           });
   
           container.transition()
-          .duration(500)
+          .duration(ANIM_DURATION)
           .attr('transform', 'translate(0,0)')
           .on('end', cb)
         }
@@ -126,7 +128,7 @@ export class RenderService implements OnDestroy {
         if ( ingredientsView.node() ) {
           ingredientsView
           .transition()
-          .duration(1000)
+          .duration(ANIM_DURATION)
           .attr('transform', `translate(0, ${VIEWBOX_HEIGHT})`)
           .on('end', cb)
           .remove();
