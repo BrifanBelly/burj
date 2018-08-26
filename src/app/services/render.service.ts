@@ -37,6 +37,7 @@ export class RenderService implements OnDestroy {
         if ( !(drink && drink.glass && drink.ingredients && drink.ingredients.length) ) {
           return undefined;
         }
+
         const drinkLayers = this.createDrinkLayers(drink);
           const mask = drink.glass.mask;
           const path = drink.glass.path;
@@ -142,15 +143,16 @@ export class RenderService implements OnDestroy {
     const glass = recipe.glass;
     const { maskHeight, maskTopMargin } = glass;
     const ingredients = recipe.ingredients;
-    const ingredientsTotal = ingredients.reduce(( acum: number, i: Ingredient ) => acum + i.amount, 0);
+    // const ingredientsTotal = ingredients.reduce(( acum: number, i: Ingredient ) => acum + i.amount, 0);
+    const ingredientsTotal = Object.keys(recipe.ingredientsAmount).reduce(( acum: number, i: string ) => acum + recipe.ingredientsAmount[i].amount, 0);
     const ingredientScale = maskHeight / ingredientsTotal;
     let topDist = maskTopMargin;
-    return ingredients.map(( i: Ingredient ) => {
-      const ingredientHeightScaled = i.amount * ingredientScale;
+    return  Object.keys(recipe.ingredientsAmount).map(( i: string, num ) => {
+      const ingredientHeightScaled = recipe.ingredientsAmount[i].amount * ingredientScale;
       const viewLayer: IngredientViewLayer = {
-        y: topDist,
-        h: ingredientHeightScaled,
-        i: i
+        y: topDist || 1,
+        h: ingredientHeightScaled || 1,
+        i: recipe.ingredients[num]
       };
       topDist += ingredientHeightScaled;
       return viewLayer;

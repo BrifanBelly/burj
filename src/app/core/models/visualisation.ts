@@ -14,11 +14,14 @@ export interface DrinkRecipe {
   glass?: Glass;
   ingredientsIds?: number[];
   ingredients: any[];
+  ingredientsAmount?: {amount: number, customAmount: string}
 }
 
 export interface IngredientDef {
   id: number;
   name: string;
+  glass?: Glass;
+  ingredients?: Ingredient[];
   colour: string;
 }
 

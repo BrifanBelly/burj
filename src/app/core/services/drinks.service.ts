@@ -7,13 +7,14 @@ import { AppState } from "../store/reducers";
 import * as actions from "../store/actions";
 import { DrinkRecipe } from "../models/visualisation";
 import { getCurrentDrink } from "../store/selectors";
+import { FirebaseService } from "./firebase.service";
 
 @Injectable()
 export class DrinksService {
-    constructor(private http: HttpClient, private store: Store<AppState>){}
+    constructor(private http: HttpClient, private store: Store<AppState>,private fbService: FirebaseService){}
 
     public getDrinks(): Observable<any> {
-        return this.http.get(`/app/core/data/data.json`)
+        return this.fbService.getDrinks()
         .pipe(catchError((error: any) => Observable.throw(error.json())));
     }
 
