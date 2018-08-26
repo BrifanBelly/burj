@@ -14,14 +14,22 @@ export interface DrinkRecipe {
   glass?: Glass;
   ingredientsIds?: number[];
   ingredients: any[];
+  ingredientsAmount?: {amount: number, customAmount: string}
 }
 
 export interface IngredientDef {
   id: number;
   name: string;
+  glass?: Glass;
+  ingredients?: Ingredient[];
   colour: string;
+  alcohol?: boolean;
 }
 
-export interface Ingredient extends IngredientDef {
-  amount: number;
+export interface Ingredient {
+	id: string;
+	name: string;
+	colour: string;
+	alcohol: boolean;
+	type: string; // eg gin, vodka, juice etc
 }

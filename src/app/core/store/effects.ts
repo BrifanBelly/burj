@@ -10,11 +10,12 @@ export class DrinksEffects {
     constructor(private actions$: Actions, private drinksService: DrinksService) {}
 
     @Effect()
-    public loadDrinks$: Observable<drinkAction.LoadComplete | drinkAction.LoadFail > = this.actions$.ofType(drinkAction.ActionTypes.Load)
+    public loadDrinks$: Observable<drinkAction.LoadComplete | drinkAction.LoadFail > = this.actions$
+    .ofType(drinkAction.ActionTypes.Load)
     .pipe(
         switchMap(() => {
             return this.drinksService.getDrinks().pipe(
-                map((data) => new drinkAction.LoadComplete(data.DRINKS)),
+                map((data) => new drinkAction.LoadComplete(data)),
                 catchError((error: any) => of(new drinkAction.LoadFail(error)))
             )
             

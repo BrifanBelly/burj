@@ -7,6 +7,8 @@ import * as d3 from 'd3';
 
 type D3Selection = d3.Selection<d3.BaseType, any, d3.BaseType, undefined>;
 
+const ANIM_DURATION = 400;
+
 interface IngredientViewLayer {
   y: number;
   h: number;
@@ -37,6 +39,7 @@ export class RenderService implements OnDestroy {
         if ( !(drink && drink.glass && drink.ingredients && drink.ingredients.length) ) {
           return undefined;
         }
+
         const drinkLayers = this.createDrinkLayers(drink);
           const mask = drink.glass.mask;
           const path = drink.glass.path;
@@ -73,8 +76,8 @@ export class RenderService implements OnDestroy {
         const currentPath = d3.select('.path--glass-path');
 				currentPath
 				.transition()
-				.duration(800)
-				.attrTween('d', this.pathTween(currentPath!.node() as SVGPathElement, path, 0.5))
+				.duration(ANIM_DURATION)
+				.attrTween('d', this.pathTween(currentPath!.node() as SVGPathElement, path, 1))
 				.on('end', cb);
       }
     )();
@@ -106,7 +109,7 @@ export class RenderService implements OnDestroy {
           });
   
           container.transition()
-          .duration(500)
+          .duration(ANIM_DURATION)
           .attr('transform', 'translate(0,0)')
           .on('end', cb)
         }
@@ -125,7 +128,7 @@ export class RenderService implements OnDestroy {
         if ( ingredientsView.node() ) {
           ingredientsView
           .transition()
-          .duration(1000)
+          .duration(ANIM_DURATION)
           .attr('transform', `translate(0, ${VIEWBOX_HEIGHT})`)
           .on('end', cb)
           .remove();
@@ -142,15 +145,16 @@ export class RenderService implements OnDestroy {
     const glass = recipe.glass;
     const { maskHeight, maskTopMargin } = glass;
     const ingredients = recipe.ingredients;
-    const ingredientsTotal = ingredients.reduce(( acum: number, i: Ingredient ) => acum + i.amount, 0);
+    // const ingredientsTotal = ingredients.reduce(( acum: number, i: Ingredient ) => acum + i.amount, 0);
+    const ingredientsTotal = Object.keys(recipe.ingredientsAmount).reduce(( acum: number, i: string ) => acum + recipe.ingredientsAmount[i].amount, 0);
     const ingredientScale = maskHeight / ingredientsTotal;
     let topDist = maskTopMargin;
-    return ingredients.map(( i: Ingredient ) => {
-      const ingredientHeightScaled = i.amount * ingredientScale;
+    return  Object.keys(recipe.ingredientsAmount).map(( i: string, num ) => {
+      const ingredientHeightScaled = recipe.ingredientsAmount[i].amount * ingredientScale;
       const viewLayer: IngredientViewLayer = {
-        y: topDist,
-        h: ingredientHeightScaled,
-        i: i
+        y: topDist || 1,
+        h: ingredientHeightScaled || 1,
+        i: recipe.ingredients[num]
       };
       topDist += ingredientHeightScaled;
       return viewLayer;

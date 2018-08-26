@@ -1,0 +1,50 @@
+$gray: #7d7d7d;
+$white: white;
+$black: #272727;
+
+.search-box input {
+  width: 100%;
+  padding: 0.2rem 0.3rem;
+  background: none;
+  border: none;
+  outline: none;
+  border-bottom: $gray dashed 1px;
+}
+
+.main-container {
+  height: 100%;
+  border: $gray dashed 1px;
+  overflow: scroll;
+  max-width: 16rem;
+  font-size: 0.9rem;
+}
+
+ul {
+  list-style-type: none;
+  max-width: 14rem;
+  margin: auto;
+  padding: 0 0.5rem;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+li {
+  background: rgba($gray, 0.1);
+  margin: 0.5rem 0rem;
+  padding: 0.3rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+li.active {
+  background: rgba($gray, 0.4);
+}
+
+li:not(.active):hover {
+  background: rgba($gray, 0.3);
+}
+
+.filters span {
+  margin: 5px;
+  padding: 5px;
+}

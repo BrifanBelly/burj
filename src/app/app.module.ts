@@ -9,18 +9,31 @@ import { VisualizationComponent } from './visualization/visualization.component'
 import { RenderService } from './services/render.service';
 import { TitleComponent } from './title/title.component';
 import { UtilsModule } from './utils/utils.module';
+import { DrinksListComponent } from './drinks-list/drinks-list.component';
+import { DescriptionComponent } from './description/description.component';
+import { Routes, RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+
+const appRoutes: Routes = [
+	// { path: '', component: AppComponent },
+	{ path: '**', component: AppComponent }
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     VisualizationComponent,
-    TitleComponent
+    TitleComponent,
+    DrinksListComponent,
+    DescriptionComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     CoreModule,
-    UtilsModule
+    UtilsModule,
+    RouterModule.forRoot(appRoutes),
+    ReactiveFormsModule
   ],
   providers: [DrinksService, RenderService],
   bootstrap: [AppComponent]
