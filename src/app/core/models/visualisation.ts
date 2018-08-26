@@ -23,8 +23,13 @@ export interface IngredientDef {
   glass?: Glass;
   ingredients?: Ingredient[];
   colour: string;
+  alcohol?: boolean;
 }
 
-export interface Ingredient extends IngredientDef {
-  amount: number;
+export interface Ingredient {
+	id: string;
+	name: string;
+	colour: string;
+	alcohol: boolean;
+	type: string; // eg gin, vodka, juice etc
 }

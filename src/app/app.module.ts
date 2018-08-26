@@ -12,6 +12,7 @@ import { UtilsModule } from './utils/utils.module';
 import { DrinksListComponent } from './drinks-list/drinks-list.component';
 import { DescriptionComponent } from './description/description.component';
 import { Routes, RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
 	// { path: '', component: AppComponent },
@@ -31,7 +32,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     CoreModule,
     UtilsModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    ReactiveFormsModule
   ],
   providers: [DrinksService, RenderService],
   bootstrap: [AppComponent]
