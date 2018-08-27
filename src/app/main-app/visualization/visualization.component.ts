@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectionStrategy, OnDestroy, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { takeUntil, switchMap, filter, tap } from 'rxjs/operators';
 import { RenderService, ViewData } from '../services/render.service';
-import { Ingredient } from '../core/models/visualisation';
+import { Ingredient } from '../../core/models/visualisation';
 
 const VIEWBOX_HEIGHT = 60;
 

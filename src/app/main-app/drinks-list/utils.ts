@@ -1,4 +1,4 @@
-import { DrinkRecipe, Ingredient } from '../core/models/visualisation';
+import { DrinkRecipe, Ingredient } from '../../core/models/visualisation';
 import { Filters } from './drinks-list.component';
 
 export function getFilteredDrinks( allDrinks: DrinkRecipe[], filters: Filters ): DrinkRecipe[] {

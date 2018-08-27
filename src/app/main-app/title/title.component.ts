@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, EventEmitter, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { DrinksService } from '../core/services/drinks.service';
+import { DrinksService } from '../../core/services/drinks.service';
 import { switchMap, map, takeUntil } from 'rxjs/operators';
 import { Observable} from 'rxjs';
 

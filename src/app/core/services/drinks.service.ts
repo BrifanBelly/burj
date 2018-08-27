@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { HttpClient } from '@angular/common/http';
 import { catchError } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { AppState } from "../store/reducers";
@@ -11,7 +10,7 @@ import { FirebaseService } from "./firebase.service";
 
 @Injectable()
 export class DrinksService {
-    constructor(private http: HttpClient, private store: Store<AppState>,private fbService: FirebaseService){}
+    constructor(private store: Store<AppState>,private fbService: FirebaseService){}
 
     public getDrinks(): Observable<any> {
         return this.fbService.getDrinks()     

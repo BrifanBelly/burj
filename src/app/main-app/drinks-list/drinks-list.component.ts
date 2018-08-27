@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { DrinkRecipe, Ingredient } from '../core/models/visualisation';
+import { DrinkRecipe, Ingredient } from '../../core/models/visualisation';
 import { FormControl } from '@angular/forms';
-import { DrinksService } from '../core/services/drinks.service';
+import { DrinksService } from '../../core/services/drinks.service';
 import { getAlcoholTypes, getFilteredDrinks } from './utils';
 
 export interface Filters {
