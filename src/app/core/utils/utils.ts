@@ -18,3 +18,23 @@ function findIndexOf<T>( array: T[], item: T, findBy?: string ): number {
     return findBy ? ((<any>d)[ findBy ] === (<any>item)[ findBy ]) : (d === item);
   });
 }
+
+export function updateObjectInArray<T>( array: T[], object: T, findBy?: string ): T[] {
+	return array.map(( item: T ) => {
+		if ( findBy ? (<any>item)[ findBy ] !== (<any>object)[ findBy ] : item !== object ) {
+			return item;
+		}
+		return Object.assign({}, item, object);
+	});
+}
+
+export function removeObjectFromArray<T>( array: T[], object: T, findBy?: string ): T[] {
+	const objectIdx = array.findIndex(( item: T ) => findBy ? (<any>item)[ findBy ] === (<any>object)[ findBy ] : item === object);
+	if ( objectIdx === -1 ) {
+		return [ ...array ];
+	}
+	return [
+		...array.slice(0, objectIdx),
+		...array.slice(objectIdx + 1)
+	];
+}

@@ -1,5 +1,5 @@
 import { Action } from "@ngrx/store";
-import { DrinkRecipe } from "../models/visualisation";
+import { DrinkRecipe } from "../../core/models/visualisation";
 
 export enum ActionTypes {
     Load = '[drinks] Load',

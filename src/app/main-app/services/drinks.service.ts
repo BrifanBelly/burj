@@ -2,15 +2,15 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Store } from "@ngrx/store";
-import { AppState } from "../store/reducers";
 import * as actions from "../store/actions";
-import { DrinkRecipe } from "../models/visualisation";
+import { DrinkRecipe } from "../../core/models/visualisation";
 import { getCurrentDrink } from "../store/selectors";
-import { FirebaseService } from "./firebase.service";
+import { FirebaseService } from "../../core/services/firebase.service";
+import { AppRootState } from "../../core/state";
 
 @Injectable()
 export class DrinksService {
-    constructor(private store: Store<AppState>,private fbService: FirebaseService){}
+    constructor(private store: Store<AppRootState>,private fbService: FirebaseService){}
 
     public getDrinks(): Observable<any> {
         return this.fbService.getDrinks()     
