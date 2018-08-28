@@ -1,39 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AppState } from './core/store/reducers';
-import { Load } from './core/store/actions';
-import { DrinksService } from './core/services/drinks.service';
-import { DrinkRecipe } from './core/models/visualisation';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { Component } from '@angular/core';
+
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector   : 'app-root',
+	templateUrl: './app.component.html',
+	styleUrls  : [ './app.component.scss' ]
 })
-export class AppComponent implements OnInit{
-  public currentDrink: DrinkRecipe;
-  constructor( private storeService: DrinksService, private cdRef: ChangeDetectorRef, private router: Router ) {}
+export class AppComponent {
 
-  public ngOnInit(): void {
-    this.storeService.loadDrinks();
-    this.storeService.getCurrentDrink().subscribe(( drink: DrinkRecipe | undefined ) => {
-      this.currentDrink = drink;
-      if(drink) {
-        const navigationExtras: NavigationExtras = {
-          queryParams: { 'drink': drink.name.toLowerCase()}
-        };
-        this.router.navigate(['/'], navigationExtras);
-      }
-    });
-  }
-
-  public loadNextDrink(): void {
-    this.storeService.setNextDrink();
-  }
-
-  public loadPrevDrink(): void {
-    this.storeService.setPreviousDrink();
-  }
 }

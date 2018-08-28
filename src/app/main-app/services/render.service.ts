@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, EventEmitter } from '@angular/core';
-import { DrinkRecipe, Ingredient } from '../core/models/visualisation';
+import { DrinkRecipe, Ingredient } from '../../core/models/visualisation';
 import { Observable, bindCallback, of } from 'rxjs';
-import { DrinksService } from '../core/services/drinks.service';
+import { DrinksService } from '../../core/services/drinks.service';
 import { takeUntil, map, tap, switchMap, take } from 'rxjs/operators';
 import * as d3 from 'd3';
 
@@ -24,9 +24,7 @@ export interface ViewData{
 
 const VIEWBOX_HEIGHT = 60;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RenderService implements OnDestroy {
   svgD3Selection: D3Selection;
   private ngOnDestroy$: EventEmitter<boolean> = new EventEmitter();

@@ -1,9 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { DrinkRecipe, Ingredient } from '../core/models/visualisation';
+import { DrinkRecipe, Ingredient } from '../../core/models/visualisation';
 import { FormControl } from '@angular/forms';
-import { DrinksService } from '../core/services/drinks.service';
+import { DrinksService } from '../../core/services/drinks.service';
+import { getAlcoholTypes, getFilteredDrinks } from './utils';
 
-interface Filters {
+export interface Filters {
 	query: string | undefined;
 	types: { [key: string]: boolean };
 }
@@ -11,12 +12,13 @@ interface Filters {
 @Component({
   selector: 'app-drinks-list',
   templateUrl: './drinks-list.component.html',
-  styleUrls: ['./drinks-list.component.scss']
+  styleUrls: ['./drinks-list.component.scss', './drinks-list-responsive.component.scss']
 })
 export class DrinksListComponent implements OnInit {
 
   searchControl: FormControl = new FormControl('');
 
+	public mobileListVisible: boolean = false;
   drinks: DrinkRecipe[];
   visibleDrinks: DrinkRecipe[];
   currentDrink: DrinkRecipe | undefined;
@@ -32,7 +34,8 @@ export class DrinksListComponent implements OnInit {
   ngOnInit() {
     this.storeService.getDrinks().subscribe((drinks: DrinkRecipe[] | undefined) => {
       this.drinks = drinks;
-      this.alcoholTypes = this.findAlcoholTypes(drinks);
+      this.visibleDrinks = drinks;
+      this.alcoholTypes = getAlcoholTypes(drinks);
       this.setTypeFilters();
       this.cdRef.detectChanges();
     });
@@ -46,32 +49,34 @@ export class DrinksListComponent implements OnInit {
       this.storeService.setCurrentDrinkById(id);
   }
 
-  public toogggleFilterType( type: string ): void {
-		this.filters.types[ type ] = !this.filters.types[ type ];
+  public toggleFilterType( type: string ): void {
+    this.filters.types[ type ] = !this.filters.types[ type ];
+    this.filterDrinks();
+  }
+  
+  public resetTypeFilter(): void {
+		Object.keys(this.filters.types).forEach(( type: string ) => {
+			this.filters.types[ type ] = true;
+		});
+		this.filterDrinks();
+		this.cdRef.detectChanges();
+	}
+
+	public resetSearchQuery(): void {
+		this.searchControl.reset('');
+		this.cdRef.detectChanges();
 	}
 
 	private setTypeFilters(): void {
 		this.filters.types = this.alcoholTypes
-		.reduce(( a: { [key: string]: boolean }, t: string ) => {return { ...a, [ t ]: true };}, {});
+		.reduce(( a: { [key: string]: boolean }, t: string ) => ({...a, [ t ]: true }), {});
 	}
 
 	private filterDrinks(): void {
-		const drinkName = this.filters.query;
-		const filter: boolean = !!(drinkName && drinkName.length);
-		// if query available filter drinks otherwise return full list
-		this.visibleDrinks = filter ? this.drinks.filter(( d: DrinkRecipe ) => {
-			return !!(d.name.match(new RegExp(drinkName!, 'gi')));
-		}) : this.drinks;
+    this.visibleDrinks = getFilteredDrinks(this.drinks, this.filters);
 		this.cdRef.detectChanges();
 	}
 
-	private findAlcoholTypes( drinks: DrinkRecipe[] ): string[] {
-		const types = drinks
-		.reduce(( i: Ingredient[], d: DrinkRecipe ) => [ ...i, ...d.ingredients ], []) // get only ingredients
-		.filter(( i: Ingredient ) => i.alcohol && i.type && i.type.length) // get only alcohol with type
-		.map(( i: Ingredient ) => i.type); // get only types
 
-		return Array.from(new Set(types)); // create array with unique values
-	}
 
 }
