@@ -9,8 +9,7 @@ import { DrinksService } from './services/drinks.service';
   styleUrls: ['./main-app.component.scss']
 })
 export class MainAppComponent implements OnInit {
-	public currentDrink: DrinkRecipe | undefined;
-
+    public loading: boolean = true;
 	constructor( private storeService: DrinksService, private cdRef: ChangeDetectorRef, private router: Router ) {
 
 	}
@@ -18,8 +17,9 @@ export class MainAppComponent implements OnInit {
 	public ngOnInit(): void { 
 		this.storeService.loadDrinks();
 		this.storeService.getCurrentDrink().subscribe(( drink: DrinkRecipe | undefined ) => {
-			this.currentDrink = drink;
 			if ( drink ) {
+				this.loading = false;
+				this.cdRef.detectChanges();
 				const navigationExtras: NavigationExtras = {
 					queryParams: { 'drink': drink.name.toLowerCase() },
 				};
