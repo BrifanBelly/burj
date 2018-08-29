@@ -18,7 +18,10 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   ingredients: Ingredient[] = [];
   listTop: number = 0;
   listHeight: number = 0
+  // public ingredientsAmount: { [id: string]: {amount:number; customAmount: string} } = {};
+  public ingredientsAmount = {};
   animating: boolean = false;
+  public loading: boolean = true;
   private ngOnDestroy$: EventEmitter<boolean> = new EventEmitter();
 
   constructor(private renderService: RenderService, private cdRef: ChangeDetectorRef) { }
@@ -33,10 +36,12 @@ export class VisualizationComponent implements OnInit, OnDestroy {
         this.cdRef.detectChanges();
       }),
       tap((data: ViewData) => {
+        this.loading = false;
         const glass = data.recipe.glass;
         this.listTop = (glass.maskTopMargin / VIEWBOX_HEIGHT ) * 100;
         this.listHeight = (glass.maskHeight / VIEWBOX_HEIGHT ) * 100;
         this.ingredients = data.recipe.ingredients;
+        this.ingredientsAmount = data.recipe.ingredientsAmount;
         this.cdRef.detectChanges();
       }),
       switchMap((data: ViewData) => this.renderService.renderDrink(data)),
