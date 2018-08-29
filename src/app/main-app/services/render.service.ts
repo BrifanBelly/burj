@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, EventEmitter } from '@angular/core';
 import { DrinkRecipe, Ingredient } from '../../core/models/visualisation';
 import { Observable, bindCallback, of } from 'rxjs';
-import { DrinksService } from '../../core/services/drinks.service';
+import { DrinksService } from './drinks.service';
 import { takeUntil, map, tap, switchMap, take } from 'rxjs/operators';
 import * as d3 from 'd3';
 

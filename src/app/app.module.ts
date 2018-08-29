@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
-import { DrinksService } from './core/services/drinks.service';
+import { DrinksService } from './main-app/services/drinks.service';
 import {BrowserModule } from '@angular/platform-browser';
 
 
@@ -17,7 +17,7 @@ import {BrowserModule } from '@angular/platform-browser';
     CoreModule,
     AppRoutingModule
   ],
-  providers: [DrinksService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

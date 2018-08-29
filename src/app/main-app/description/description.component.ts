@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DrinkRecipe } from '../../core/models/visualisation';
-import { DrinksService } from '../../core/services/drinks.service';
+import { DrinksService } from '../services/drinks.service';
 
 @Component({
   selector: 'app-description',
